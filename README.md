@@ -17,25 +17,14 @@ This repo holds no game files. You need your own copy of the game.
 - Windows 10 or 11, 64-bit
 - [NHL Legacy Native](https://github.com/csrpfivem/PS3NHLLegacyRecomp/releases), installed and running. Its requirements apply too, including a DirectX 12 graphics card and a CPU with AVX2.
 - Your own NHL Legacy Edition (US, BLUS31540) as a decrypted ISO or an extracted folder, plus its 1.01 update
-- The [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0), to build the Workbench
 
-### Build it
+### Download it
 
-There's no ready-made download yet, so build it from source:
+1. Get the latest `.zip` from the [Releases page](https://github.com/SonkuModz/NHL-Legacy-Workbench/releases).
+2. Unzip it anywhere.
+3. Run `NhlLegacyWorkbench.exe`. Nothing else needs installing.
 
-```bash
-git clone https://github.com/SonkuModz/NHL-Legacy-Workbench.git
-```
-
-```bash
-cd NHL-Legacy-Workbench
-```
-
-```bash
-dotnet build NhlLegacyWorkbench.slnx -c Release
-```
-
-Then run `src\NhlWorkbench.App\bin\Release\net10.0-windows\NhlLegacyWorkbench.exe`.
+The app isn't code-signed, so Windows may show a SmartScreen warning the first time. To run it anyway, choose **More info**, then **Run anyway**.
 
 ### Follow the Setup page
 
@@ -73,6 +62,22 @@ Ctrl+K searches everything, and Ctrl+/ lists the keyboard shortcuts.
 If you replace a texture in a file that comes from another enabled mod, your mod holds that whole file. The same goes for files copied from an installed mod. Ask the mod's maker before you share it.
 
 ## For developers
+
+Building from source needs the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0):
+
+```bash
+git clone https://github.com/SonkuModz/NHL-Legacy-Workbench.git
+```
+
+```bash
+cd NHL-Legacy-Workbench
+```
+
+```bash
+dotnet build NhlLegacyWorkbench.slnx -c Release
+```
+
+The app is then at `src\NhlWorkbench.App\bin\Release\net10.0-windows\NhlLegacyWorkbench.exe`. To run the tests:
 
 ```bash
 dotnet test NhlLegacyWorkbench.slnx
