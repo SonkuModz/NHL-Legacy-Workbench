@@ -22,9 +22,11 @@ This repo holds no game files. You need your own copy of the game.
 
 1. Get the latest `.zip` from the [Releases page](https://github.com/SonkuModz/NHL-Legacy-Workbench/releases).
 2. Unzip it anywhere.
-3. Run `NhlLegacyWorkbench.exe`. Nothing else needs installing.
+3. Run `NhlLegacyWorkbench.exe`. You don't need to install .NET.
 
 The app isn't code-signed, so Windows may show a SmartScreen warning the first time. To run it anyway, choose **More info**, then **Run anyway**.
+
+Reading textures needs Microsoft's [Visual C++ Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe), which many PCs already have. If logos and textures stay blank, install it.
 
 ### Follow the Setup page
 
