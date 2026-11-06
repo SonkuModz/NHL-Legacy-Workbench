@@ -1,0 +1,170 @@
+<UserControl x:Class="NhlWorkbench.App.Views.SoundsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="264" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="340" />
+    </Grid.ColumnDefinitions>
+
+    <!-- The banks, by what they're for -->
+    <Border Background="{StaticResource Panel}" BorderBrush="{StaticResource Line}" BorderThickness="0,0,1,0">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="14,16,14,10">
+          <TextBox Text="{Binding Query, UpdateSourceTrigger=PropertyChanged, Delay=150}" AutomationProperties.Name="Search sounds" ToolTip="Search by team, bank or the name of a sound" />
+          <TextBlock Text="Search teams and sounds" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+            <TextBlock.Style>
+              <Style TargetType="TextBlock" BasedOn="{StaticResource Muted}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Query}" Value="">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style>
+          </TextBlock>
+        </Grid>
+
+        <ListBox Grid.Row="1" ItemsSource="{Binding Banks}" SelectedItem="{Binding SelectedBank}" ItemContainerStyle="{StaticResource RowItem}"
+                 Margin="8,0,4,8" AutomationProperties.Name="Sound banks" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+          <ListBox.GroupStyle>
+            <GroupStyle>
+              <GroupStyle.HeaderTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Name}" Style="{StaticResource Label}" Margin="8,14,8,6" />
+                </DataTemplate>
+              </GroupStyle.HeaderTemplate>
+            </GroupStyle>
+          </ListBox.GroupStyle>
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Title}" FontSize="13" TextTrimming="CharacterEllipsis" ToolTip="{Binding FileName}" />
+                <Ellipse Grid.Column="1" Width="8" Height="8" Fill="{StaticResource RedLine}" Margin="8,0,0,0" ToolTip="Changed in your mod"
+                         Visibility="{Binding IsChanged, Converter={StaticResource ShowIf}}" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+
+        <TextBlock Grid.Row="1" Style="{StaticResource Muted}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="24,0"
+                   Text="Connect your game on the Rink page to hear its sounds." Visibility="{Binding DataContext.HasGame, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource HideIf}}" />
+      </Grid>
+    </Border>
+
+    <!-- The sounds in the bank -->
+    <Grid Grid.Column="1" Margin="24,16,12,12">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <StackPanel>
+        <TextBlock Text="{Binding SelectedBank.Title}" Style="{StaticResource Heading}" FontSize="24" TextTrimming="CharacterEllipsis" />
+        <TextBlock Text="{Binding BankFacts}" Style="{StaticResource Muted}" FontSize="12" />
+      </StackPanel>
+
+      <Grid Grid.Row="1" Margin="10,14,18,4">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="64" />
+          <ColumnDefinition Width="64" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="SOUND" Style="{StaticResource Label}" FontSize="10" />
+        <TextBlock Grid.Column="1" Text="LENGTH" Style="{StaticResource Label}" FontSize="10" />
+        <TextBlock Grid.Column="2" Text="KEPT IN" Style="{StaticResource Label}" FontSize="10" />
+      </Grid>
+
+      <Grid Grid.Row="2">
+        <ListBox ItemsSource="{Binding Sounds}" SelectedItem="{Binding SelectedSound}" ItemContainerStyle="{StaticResource RowItem}"
+                 AutomationProperties.Name="Sounds in this bank" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="64" />
+                  <ColumnDefinition Width="56" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Name}" FontSize="13" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}" />
+                <TextBlock Grid.Column="1" Text="{Binding Length}" FontSize="13" />
+                <TextBlock Grid.Column="2" Text="{Binding Where}" Style="{StaticResource Label}" FontSize="10" VerticalAlignment="Center" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock Text="{Binding Message}" Style="{StaticResource Muted}" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+      </Grid>
+    </Grid>
+
+    <!-- The sound on show -->
+    <Border Grid.Column="2" Background="{StaticResource Panel}" BorderBrush="{StaticResource Line}" BorderThickness="1,0,0,0">
+      <Grid>
+        <TextBlock Style="{StaticResource Muted}" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="40,0"
+                   Text="Pick a sound to hear it." Visibility="{Binding HasSound, Converter={StaticResource HideIf}}" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding HasSound, Converter={StaticResource ShowIf}}">
+          <StackPanel Margin="20,20,20,16">
+            <TextBlock Text="{Binding SelectedSound.Name}" Style="{StaticResource SubHeading}" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding SoundFacts}" Style="{StaticResource Muted}" FontSize="12" Margin="0,4,0,14" />
+
+            <Button Content="{Binding PlayLabel}" Style="{StaticResource PrimaryButton}" Command="{Binding PlayCommand}" Margin="0,0,0,8" />
+            <Button Content="Save as WAV" Style="{StaticResource GhostButton}" Command="{Binding ExportWavCommand}" Margin="0,0,0,8" />
+            <Button Content="Save the whole bank as WAVs" Style="{StaticResource GhostButton}" Command="{Binding ExportAllCommand}" />
+
+            <Rectangle Height="1" Fill="{StaticResource Line}" Margin="0,18" />
+
+            <TextBlock Text="REPLACE" Style="{StaticResource Label}" FontSize="11" Margin="0,0,0,6" />
+            <TextBlock Text="{Binding ReplaceNote}" Style="{StaticResource Muted}" FontSize="12" Margin="0,0,0,10" />
+            <StackPanel Visibility="{Binding CanReplace, Converter={StaticResource ShowIf}}">
+              <Grid Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="8" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="START AT (SECONDS)" Style="{StaticResource Label}" FontSize="9" Margin="0,0,0,3" />
+                <TextBox Grid.Row="1" Text="{Binding ShapeStart, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Start at, in seconds" />
+                <TextBlock Grid.Column="2" Text="KEEP (SECONDS)" Style="{StaticResource Label}" FontSize="9" Margin="0,0,0,3" />
+                <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding ShapeLength, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Seconds to keep" ToolTip="Leave empty to keep it all" />
+                <TextBlock Grid.Row="2" Text="LOUDER OR QUIETER (DB)" Style="{StaticResource Label}" FontSize="9" Margin="0,8,0,3" />
+                <TextBox Grid.Row="3" Text="{Binding ShapeVolume, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Volume change in decibels" ToolTip="+6 is about twice as loud in level, -6 about half" />
+                <TextBlock Grid.Column="2" Grid.Row="2" Text="FADE OUT (SECONDS)" Style="{StaticResource Label}" FontSize="9" Margin="0,8,0,3" />
+                <TextBox Grid.Column="2" Grid.Row="3" Text="{Binding ShapeFadeOut, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Fade out, in seconds" />
+              </Grid>
+              <Button Content="Hear this sound with those changes" Style="{StaticResource GhostButton}" Command="{Binding PreviewShapeCommand}" Margin="0,0,0,8" />
+              <Button Content="Change this sound" Style="{StaticResource GhostButton}" Command="{Binding ChangeThisSoundCommand}" Margin="0,0,0,8"
+                      ToolTip="Keep this sound, trimmed or louder. It's encoded again, which loses a little quality each time." />
+              <Button Content="Pick a new sound" Style="{StaticResource GhostButton}" Command="{Binding ReplaceCommand}" Margin="0,0,0,8" ToolTip="Use an audio file instead, with the changes above" />
+            </StackPanel>
+            <Button Content="Hear the game's original" Style="{StaticResource GhostButton}" Command="{Binding PlayOriginalCommand}"
+                    Visibility="{Binding BankInMod, Converter={StaticResource ShowIf}}" Margin="0,0,0,8" />
+            <Button Content="Put this bank back" Style="{StaticResource GhostButton}" Command="{Binding UndoBankCommand}"
+                    Visibility="{Binding BankInMod, Converter={StaticResource ShowIf}}" ToolTip="Take this bank out of your mod" />
+
+            <Border Style="{StaticResource Card}" Padding="12,8" Margin="0,14,0,0" BorderBrush="{StaticResource RedLine}" Visibility="{Binding HasProblem, Converter={StaticResource ShowIf}}">
+              <TextBlock Text="{Binding Problem}" Foreground="{StaticResource RedLineHover}" FontSize="12" TextWrapping="Wrap" />
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>

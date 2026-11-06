@@ -1,0 +1,73 @@
+<UserControl x:Class="NhlWorkbench.App.Views.TextureDetailPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Border Background="{StaticResource Panel}" BorderBrush="{StaticResource Line}" BorderThickness="1,0,0,0">
+    <Grid>
+      <TextBlock Style="{StaticResource Muted}" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="40,0"
+                 Text="Pick a texture to compare it, save it, or swap in your own." Visibility="{Binding HasSelection, Converter={StaticResource HideIf}}" />
+
+      <ScrollViewer VerticalScrollBarVisibility="Auto" Visibility="{Binding HasSelection, Converter={StaticResource ShowIf}}">
+        <StackPanel Margin="24,22">
+          <TextBlock Text="{Binding Selected.Title}" Style="{StaticResource Heading}" FontSize="24" TextTrimming="CharacterEllipsis" ToolTip="{Binding Selected.File.Path}" />
+          <TextBlock Text="{Binding Selected.Subtitle}" Foreground="{StaticResource Text}" FontSize="13" Margin="0,2,0,0" TextWrapping="Wrap"
+                     Visibility="{Binding Selected.HasOwner, Converter={StaticResource ShowIf}}" />
+          <TextBlock Text="{Binding Details}" Style="{StaticResource Muted}" FontSize="12" Margin="0,2,0,8" />
+          <Border Background="{StaticResource PanelRaised}" BorderBrush="{StaticResource Caution}" BorderThickness="1" CornerRadius="8" Padding="10,7" Margin="0,0,0,12"
+                  Visibility="{Binding Selected.IsShared, Converter={StaticResource ShowIf}}">
+            <TextBlock Text="{Binding Selected.SharedNote}" Foreground="{StaticResource Text}" FontSize="12" TextWrapping="Wrap" />
+          </Border>
+
+          <StackPanel Visibility="{Binding HasSeveralChoices, Converter={StaticResource ShowIf}}" Margin="0,0,0,8">
+            <TextBlock Text="TEXTURES IN THIS FILE" Style="{StaticResource Label}" Margin="0,0,0,6" />
+            <ItemsControl ItemsSource="{Binding Choices}" Focusable="False">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Button Content="{Binding Label}" ToolTip="{Binding Hint}" Style="{StaticResource ChoiceButton}"
+                          Command="{Binding DataContext.ChooseTextureCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+
+          <Grid Margin="0,0,0,6">
+            <TextBlock Text="{Binding BeforeLabel}" ToolTip="{Binding BeforeLabel}" Style="{StaticResource Label}" TextTrimming="CharacterEllipsis" Margin="0,0,110,0" />
+            <Button Style="{StaticResource SmallLink}" HorizontalAlignment="Right" Command="{Binding ToggleTransparencyCommand}"
+                    ToolTip="Some textures keep other data in their alpha channel, which can hide most of the picture">
+              <TextBlock Text="{Binding AlphaButtonText}" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" FontFamily="{StaticResource DisplayFont}" FontSize="11" />
+            </Button>
+          </Grid>
+          <Grid Height="190">
+            <Border Background="{StaticResource Checker}" CornerRadius="12" />
+            <Image Source="{Binding Before}" Margin="8" RenderOptions.BitmapScalingMode="HighQuality" />
+          </Grid>
+
+          <TextBlock Text="IN YOUR MOD" Style="{StaticResource Label}" Margin="0,14,0,6" />
+          <Grid Height="190">
+            <Border Background="{StaticResource Checker}" CornerRadius="12" />
+            <Image Source="{Binding After}" Margin="8" RenderOptions.BitmapScalingMode="HighQuality" />
+            <TextBlock Text="No change yet" Foreground="{StaticResource Text}" FontFamily="{StaticResource DisplayFont}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Visibility="{Binding Selected.IsChanged, Converter={StaticResource HideIf}}" />
+          </Grid>
+
+          <Button Content="Use my picture or DDS" Style="{StaticResource PrimaryButton}" Command="{Binding ReplaceCommand}" Margin="0,16,0,0" />
+          <TextBlock Style="{StaticResource Muted}" FontSize="12" Margin="0,8,0,0" LineHeight="17" Text="Pictures are fitted to this texture's size and keep their proportions." />
+          <Grid Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="8" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="8" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Content="Save PNG" Style="{StaticResource GhostButton}" Command="{Binding SavePngCommand}" ToolTip="Saves your version if you've changed this file, otherwise what's showing above" />
+            <Button Grid.Column="2" Content="Save DDS" Style="{StaticResource GhostButton}" Command="{Binding SaveDdsCommand}" ToolTip="Saves your version if you've changed this file, otherwise what's showing above" />
+            <Button Grid.Column="4" Content="Undo" Style="{StaticResource GhostButton}" Command="{Binding RevertCommand}" ToolTip="Takes this whole file out of your mod" />
+          </Grid>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </Border>
+</UserControl>

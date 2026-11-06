@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>NhlWorkbench.App</RootNamespace>
+    <AssemblyName>NhlLegacyWorkbench</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>2.0.0</Version>
+    <Product>NHL Legacy Workbench</Product>
+    <AssemblyTitle>NHL Legacy Workbench</AssemblyTitle>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NhlWorkbench.Core\NhlWorkbench.Core.csproj" />
+  </ItemGroup>
+
+</Project>

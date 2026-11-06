@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>NhlWorkbench.Core</RootNamespace>
+    <AssemblyName>NhlWorkbench.Core</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Tdb\Resources\nhlng-meta.xml" LogicalName="NhlWorkbench.Core.Tdb.nhlng-meta.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="NhlWorkbench.Core.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DirectXTexNet" />
+    <PackageReference Include="SharpGLTF.Toolkit" />
+  </ItemGroup>
+
+</Project>

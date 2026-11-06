@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NhlWorkbench.App/NhlWorkbench.App.csproj" />
+    <Project Path="src/NhlWorkbench.Core/NhlWorkbench.Core.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/NhlWorkbench.Probe/NhlWorkbench.Probe.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NhlWorkbench.Core.Tests/NhlWorkbench.Core.Tests.csproj" />
+  </Folder>
+</Solution>

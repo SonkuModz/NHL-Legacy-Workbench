@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>NhlWorkbench.Probe</RootNamespace>
+    <AssemblyName>NhlWorkbench.Probe</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\NhlWorkbench.Core\NhlWorkbench.Core.csproj" />
+  </ItemGroup>
+
+</Project>

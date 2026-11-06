@@ -1,0 +1,15 @@
+<Application x:Class="NhlWorkbench.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:NhlWorkbench.App">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Theme/Arena.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <BooleanToVisibilityConverter x:Key="ShowIf" />
+      <local:HideIfConverter x:Key="HideIf" />
+      <local:ShowIfNotNullConverter x:Key="ShowIfSet" />
+    </ResourceDictionary>
+  </Application.Resources>
+</Application>

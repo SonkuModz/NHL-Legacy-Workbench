@@ -1,0 +1,21 @@
+bin/
+obj/
+.vs/
+*.user
+references/
+
+# Recomp install: holds game files
+NHL-Legacy-Native*/
+
+# Never publish game files or local leftovers
+*.iso
+*.pkg
+*.big
+*.rpsgl
+*.rx2
+*.abk
+*.vp6
+*.ast
+SYS-DATA
+*.bak
+.claude/

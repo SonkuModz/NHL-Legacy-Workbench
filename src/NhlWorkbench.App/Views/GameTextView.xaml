@@ -1,0 +1,175 @@
+<UserControl x:Class="NhlWorkbench.App.Views.GameTextView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <UserControl.Resources>
+    <ItemsPanelTemplate x:Key="Wrapped"><WrapPanel /></ItemsPanelTemplate>
+    <Style x:Key="ToolButton" TargetType="Button" BasedOn="{StaticResource GhostButton}">
+      <Setter Property="Padding" Value="10,3" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Margin" Value="0,0,6,6" />
+    </Style>
+  </UserControl.Resources>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" MinWidth="320" />
+      <ColumnDefinition Width="360" />
+    </Grid.ColumnDefinitions>
+
+    <!-- The strings -->
+    <Grid Margin="30,22,12,0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <StackPanel Margin="0,0,0,10">
+        <TextBlock Text="TEXT" Style="{StaticResource Heading}" />
+        <TextBlock Style="{StaticResource Muted}" FontSize="13" TextWrapping="Wrap" Text="Every string the game shows, from team names to menus, in each language." />
+      </StackPanel>
+      <ItemsControl Grid.Row="1" ItemsSource="{Binding Languages}" ItemsPanel="{StaticResource Wrapped}" Focusable="False">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Button Content="{Binding Label}" Style="{StaticResource ChoiceButton}" CommandParameter="{Binding}"
+                    Command="{Binding DataContext.ChooseLanguageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+      <Grid Grid.Row="2" Margin="0,4,0,10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid>
+          <TextBox Text="{Binding Query, UpdateSourceTrigger=PropertyChanged, Delay=200}" AutomationProperties.Name="Search the text" />
+          <TextBlock Text="Search the text" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+            <TextBlock.Style>
+              <Style TargetType="TextBlock" BasedOn="{StaticResource Muted}">
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Query}" Value="">
+                    <Setter Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style>
+          </TextBlock>
+        </Grid>
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Filters}" ItemsPanel="{StaticResource Wrapped}" Focusable="False" Margin="10,6,0,0">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Button Content="{Binding Label}" Style="{StaticResource ChoiceButton}" CommandParameter="{Binding}"
+                      Command="{Binding DataContext.ChooseFilterChoiceCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </Grid>
+
+      <ListBox Grid.Row="3" ItemsSource="{Binding RowsView}" SelectedItem="{Binding Selected}" ItemContainerStyle="{StaticResource RowItem}"
+               ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" AutomationProperties.Name="Text strings">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <StackPanel>
+                <TextBlock Text="{Binding Text}" Foreground="{StaticResource Text}" FontSize="13" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="{Binding Key}" Style="{StaticResource Muted}" FontSize="11" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+              </StackPanel>
+              <Border Grid.Column="1" Background="{StaticResource RedLine}" CornerRadius="5" Padding="6,1" Margin="8,0,4,0" VerticalAlignment="Center"
+                      Visibility="{Binding IsChanged, Converter={StaticResource ShowIf}}">
+                <TextBlock Text="EDITED" Foreground="White" FontFamily="{StaticResource DisplayFont}" FontSize="10" />
+              </Border>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <Grid Grid.Row="4" Margin="0,8,0,4">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding Summary}" Style="{StaticResource Muted}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,8,6" />
+        <WrapPanel Grid.Column="1">
+          <Button Content="Export CSV" Style="{StaticResource ToolButton}" Command="{Binding ExportCsvCommand}" CommandParameter="all" ToolTip="Save this language for a spreadsheet" />
+          <Button Content="Export changed" Style="{StaticResource ToolButton}" Command="{Binding ExportCsvCommand}" CommandParameter="changed" ToolTip="Save only the strings you changed" />
+          <Button Content="Import CSV" Style="{StaticResource ToolButton}" Command="{Binding ImportCsvCommand}" ToolTip="Apply a spreadsheet with Key and Text columns" />
+        </WrapPanel>
+      </Grid>
+    </Grid>
+
+    <!-- The string on show -->
+    <Border Grid.Column="1" Background="{StaticResource Panel}" BorderBrush="{StaticResource Line}" BorderThickness="1,0,0,0">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource Muted}" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="40,0" TextWrapping="Wrap"
+                   Text="Pick a string to change it." Visibility="{Binding HasRow, Converter={StaticResource HideIf}}" />
+        <StackPanel Margin="20" Visibility="{Binding HasRow, Converter={StaticResource ShowIf}}">
+          <TextBlock Text="{Binding Selected.Key}" Style="{StaticResource SubHeading}" FontSize="15" TextWrapping="Wrap" />
+          <TextBlock Text="YOUR TEXT" Style="{StaticResource Label}" FontSize="10" Margin="0,14,0,4" />
+          <TextBox Text="{Binding EditText}" KeyDown="OnBoxKeyDown" AcceptsReturn="False" TextWrapping="Wrap" MinHeight="72" VerticalContentAlignment="Top" AutomationProperties.Name="Your text" />
+          <TextBlock Text="Press Enter or leave the box to save." Style="{StaticResource Muted}" FontSize="11" Margin="0,4,0,0" />
+          <TextBlock Text="{Binding Problem}" Foreground="{StaticResource RedLine}" FontSize="12" TextWrapping="Wrap" Margin="0,8,0,0"
+                     Visibility="{Binding HasProblem, Converter={StaticResource ShowIf}}" />
+          <TextBlock Text="{Binding FontNote}" Foreground="{StaticResource Caution}" FontSize="12" TextWrapping="Wrap" Margin="0,8,0,0"
+                     Visibility="{Binding HasFontNote, Converter={StaticResource ShowIf}}" />
+          <TextBlock Text="THE GAME'S TEXT" Style="{StaticResource Label}" FontSize="10" Margin="0,14,0,4" />
+          <TextBlock Text="{Binding OriginalText}" Style="{StaticResource Muted}" FontSize="13" TextWrapping="Wrap" />
+          <WrapPanel Margin="0,12,0,0">
+            <Button Content="Put back" Style="{StaticResource GhostButton}" Command="{Binding PutBackCommand}" Margin="0,0,8,0" />
+            <Button Content="Use in every language" Style="{StaticResource GhostButton}" Command="{Binding UseEverywhereCommand}" ToolTip="Copy this text over the same string in the other languages" />
+          </WrapPanel>
+        </StackPanel>
+
+        <Border Grid.Row="1" BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Padding="20,14">
+          <StackPanel>
+            <TextBlock Text="FIND AND REPLACE" Style="{StaticResource Label}" FontSize="10" Margin="0,0,0,6" />
+            <Grid>
+              <TextBox Text="{Binding ReplaceFind, UpdateSourceTrigger=PropertyChanged, Delay=200}" AutomationProperties.Name="Text to find" ToolTip="Text to find" />
+              <TextBlock Text="Find" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                <TextBlock.Style>
+                  <Style TargetType="TextBlock" BasedOn="{StaticResource Muted}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding ReplaceFind}" Value="">
+                        <Setter Property="Visibility" Value="Visible" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBlock.Style>
+              </TextBlock>
+            </Grid>
+            <Grid Margin="0,6,0,0">
+              <TextBox Text="{Binding ReplaceWith, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Text to put in its place" ToolTip="Text to put in its place" />
+              <TextBlock Text="Replace with" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                <TextBlock.Style>
+                  <Style TargetType="TextBlock" BasedOn="{StaticResource Muted}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding ReplaceWith}" Value="">
+                        <Setter Property="Visibility" Value="Visible" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBlock.Style>
+              </TextBlock>
+            </Grid>
+            <CheckBox Content="Match upper and lower case" IsChecked="{Binding ReplaceMatchCase}" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,8,0,0" />
+            <TextBlock Text="{Binding ReplacePreview}" Style="{StaticResource Muted}" FontSize="11" Margin="0,6,0,8" TextWrapping="Wrap" />
+            <WrapPanel>
+              <Button Content="Replace" Style="{StaticResource GhostButton}" Command="{Binding ReplaceAllCommand}" Margin="0,0,8,0" ToolTip="Replace in the language on show" />
+              <Button Content="In every language" Style="{StaticResource GhostButton}" Command="{Binding ReplaceEverywhereCommand}" ToolTip="Replace in all the languages at once" />
+            </WrapPanel>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>
